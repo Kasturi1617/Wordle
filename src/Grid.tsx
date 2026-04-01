@@ -119,7 +119,7 @@ function Grid() {
         <div className={styles.keyboard}>
           {KEYBOARD.map((row, rowIndex) => {
             return (
-              <div className={styles.keyboard_row}>
+              <div key={rowIndex} className={styles.keyboard_row}>
                 {row.map((letter, colIndex) => {
                   return (
                     <button
