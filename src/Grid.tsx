@@ -16,18 +16,44 @@ function Grid() {
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * WORDS.length);
-    setTargetWord(WORDS[randomIndex].toUpperCase());
+    const word = WORDS[randomIndex].toUpperCase();
+    setTargetWord(word);
+    console.log('Target Word:', word);
   }, []);
 
   const initialGrid = Array.from({ length: MAX_ATTEMPTS }, () =>
     Array(WORD_LENGTH).fill(''),
   );
 
+  const initialColors = Array.from({ length: MAX_ATTEMPTS }, () =>
+    Array(WORD_LENGTH).fill(''),
+  );
+
   const [gameState, setGameState] = useState({
     grid: initialGrid,
+    colors: initialColors,
     currentRow: 0,
     currentCol: 0,
   });
+
+  const validateEnteredWord = (word: string) => {
+    setGameState(prev => {
+      const newColors = prev.colors.map(row => [...row]);
+
+      for (let i = 0; i < WORD_LENGTH; i++) {
+        if (targetWord[i] === word[i]) {
+          newColors[prev.currentRow][i] = styles.green;
+        } else if (targetWord.includes(word[i])) {
+          newColors[prev.currentRow][i] = styles.yellow;
+        }
+      }
+
+      return {
+        ...prev,
+        colors: newColors,
+      };
+    });
+  };
 
   const handleKey = (key: string) => {
     if (key.length === 1 && key.match(/[a-zA-Z]/)) {
@@ -46,25 +72,40 @@ function Grid() {
 
         return {
           grid: newGrid,
+          colors: prev.colors,
           currentRow: newRow,
           currentCol: newCol,
         };
       });
     } else if (key === 'Enter' || key === '⏎') {
       setGameState(prev => {
-        const { grid, currentRow, currentCol } = prev;
-        if (currentCol < WORD_LENGTH) {
-          return prev;
-        }
-        const newGrid = grid.map(row => [...row]);
+        const { grid, colors, currentRow, currentCol } = prev;
 
-        let newCol = 0;
-        let newRow = currentRow + 1;
+        if (currentCol < WORD_LENGTH) return prev;
+
+        const currentWord = grid[currentRow].join('');
+        console.log(currentWord);
+
+        const newColors = colors.map(row => [...row]);
+        console.log('Targetword: ', targetWord);
+
+        for (let i = 0; i < WORD_LENGTH; i++) {
+          if (targetWord[i] === currentWord[i]) {
+            console.log('Green:', currentWord[i]);
+            newColors[currentRow][i] = styles.green;
+          } else if (targetWord.includes(currentWord[i])) {
+            console.log('Yellow:', currentWord[i]);
+            newColors[currentRow][i] = styles.yellow;
+          }
+        }
+
+        console.log(newColors);
 
         return {
-          grid: newGrid,
-          currentRow: newRow,
-          currentCol: newCol,
+          grid,
+          colors: newColors,
+          currentRow: currentRow + 1,
+          currentCol: 0,
         };
       });
     } else if (key === 'Backspace' || key === '⌫') {
@@ -81,6 +122,7 @@ function Grid() {
 
         return {
           grid: newGrid,
+          colors: prev.colors,
           currentRow: newRow,
           currentCol: newCol,
         };
@@ -97,17 +139,27 @@ function Grid() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [targetWord]);
 
   return (
     <>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Audiowide|Sofia|Trirong"
+      ></link>
+      <h1 className={styles.title}>Wordle</h1>
       <div className={styles.main}>
         {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => {
           return (
             <div key={index} className={styles.row}>
               {Array.from({ length: WORD_LENGTH }).map((_, cellIndex) => {
                 return (
-                  <div key={cellIndex} className={styles.cell}>
+                  <div
+                    key={cellIndex}
+                    className={`${styles.cell} 
+                    ${gameState.colors[index][cellIndex]} 
+                    ${index === gameState.currentRow - 1 ? styles.flip : ''}`}
+                  >
                     {gameState.grid[index][cellIndex]}
                   </div>
                 );
