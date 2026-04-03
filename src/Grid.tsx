@@ -36,6 +36,8 @@ function Grid() {
     currentCol: 0,
   });
 
+  const [invalidWord, setInvalidWord] = useState(false);
+
   const validateEnteredWord = (word: string) => {
     setGameState(prev => {
       const newColors = prev.colors.map(row => [...row]);
@@ -85,6 +87,12 @@ function Grid() {
 
         const currentWord = grid[currentRow].join('');
         console.log(currentWord);
+
+        if (!WORDS.includes(currentWord.toLowerCase())) {
+          setInvalidWord(true);
+          setTimeout(() => setInvalidWord(false), 1000);
+          return prev;
+        }
 
         const newColors = colors.map(row => [...row]);
         console.log('Targetword: ', targetWord);
@@ -148,6 +156,7 @@ function Grid() {
         href="https://fonts.googleapis.com/css?family=Audiowide|Sofia|Trirong"
       ></link>
       <h1 className={styles.title}>Wordle</h1>
+      {invalidWord && <div className={styles.error}>Not a valid word</div>}
       <div className={styles.main}>
         {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => {
           return (
