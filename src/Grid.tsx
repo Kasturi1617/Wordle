@@ -1,6 +1,8 @@
 import styles from './Grid.module.css';
+import messages from './messages';
 import { useEffect, useState } from 'react';
 import WORDS from './WORDS.ts';
+import Confetti from 'react-confetti';
 
 function Grid() {
   const MAX_ATTEMPTS = 6;
@@ -13,6 +15,9 @@ function Grid() {
   ];
 
   const [targetWord, setTargetWord] = useState('');
+  const [correctLetters, setCorrectLetters] = useState(0);
+  const [shakeRow, setShakeRow] = useState<number | null>(null);
+  const [invalidWord, setInvalidWord] = useState(false);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * WORDS.length);
@@ -36,26 +41,7 @@ function Grid() {
     currentCol: 0,
   });
 
-  const [invalidWord, setInvalidWord] = useState(false);
-
-  const validateEnteredWord = (word: string) => {
-    setGameState(prev => {
-      const newColors = prev.colors.map(row => [...row]);
-
-      for (let i = 0; i < WORD_LENGTH; i++) {
-        if (targetWord[i] === word[i]) {
-          newColors[prev.currentRow][i] = styles.green;
-        } else if (targetWord.includes(word[i])) {
-          newColors[prev.currentRow][i] = styles.yellow;
-        }
-      }
-
-      return {
-        ...prev,
-        colors: newColors,
-      };
-    });
-  };
+  
 
   const handleKey = (key: string) => {
     if (key.length === 1 && key.match(/[a-zA-Z]/)) {
@@ -89,18 +75,22 @@ function Grid() {
         console.log(currentWord);
 
         if (!WORDS.includes(currentWord.toLowerCase())) {
-          setInvalidWord(true);
-          setTimeout(() => setInvalidWord(false), 1000);
+          setShakeRow(currentRow);
+          setTimeout(() => {
+            setShakeRow(null);
+          }, 1000);
           return prev;
         }
 
         const newColors = colors.map(row => [...row]);
         console.log('Targetword: ', targetWord);
+        var count = 0;
 
         for (let i = 0; i < WORD_LENGTH; i++) {
           if (targetWord[i] === currentWord[i]) {
             console.log('Green:', currentWord[i]);
             newColors[currentRow][i] = styles.green;
+            setCorrectLetters(prev => prev + 1);
           } else if (targetWord.includes(currentWord[i])) {
             console.log('Yellow:', currentWord[i]);
             newColors[currentRow][i] = styles.yellow;
@@ -155,12 +145,13 @@ function Grid() {
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Audiowide|Sofia|Trirong"
       ></link>
+      <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
       <h1 className={styles.title}>Wordle</h1>
-      {invalidWord && <div className={styles.error}>Not a valid word</div>}
+      {invalidWord && <div className={styles.error}>{messages.notAValidWord}</div>}
       <div className={styles.main}>
         {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => {
           return (
-            <div key={index} className={styles.row}>
+            <div key={index} className={`${styles.row} ${shakeRow === index ? styles.shake : ''}`}>
               {Array.from({ length: WORD_LENGTH }).map((_, cellIndex) => {
                 return (
                   <div
