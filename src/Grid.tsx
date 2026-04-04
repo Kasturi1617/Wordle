@@ -17,7 +17,6 @@ function Grid() {
   const [targetWord, setTargetWord] = useState('');
   const [correctLetters, setCorrectLetters] = useState(0);
   const [shakeRow, setShakeRow] = useState<number | null>(null);
-  const [invalidWord, setInvalidWord] = useState(false);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * WORDS.length);
@@ -147,7 +146,6 @@ function Grid() {
       ></link>
       <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
       <h1 className={styles.title}>Wordle</h1>
-      {invalidWord && <div className={styles.error}>{messages.notAValidWord}</div>}
       <div className={styles.main}>
         {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => {
           return (
