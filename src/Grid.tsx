@@ -18,6 +18,7 @@ function Grid() {
   const [correctLetters, setCorrectLetters] = useState(0);
   const [shakeRow, setShakeRow] = useState<number | null>(null);
   const [winRow, setWinRow] = useState<number | null>(null);
+  const [isLost, setIsLost] = useState(false);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * WORDS.length);
@@ -42,7 +43,7 @@ function Grid() {
   });
 
   const handleKey = (key: string) => {
-    if(correctLetters === WORD_LENGTH) {
+    if (correctLetters === WORD_LENGTH) {
       console.log('Game already won, ignoring input');
       return;
     }
@@ -75,7 +76,7 @@ function Grid() {
 
         const currentWord = grid[currentRow].join('');
 
-        if(currentWord === targetWord) {
+        if (currentWord === targetWord) {
           setWinRow(currentRow);
         }
 
@@ -100,6 +101,10 @@ function Grid() {
           }
         }
         setCorrectLetters(count);
+
+        if (currentRow === MAX_ATTEMPTS - 1 && count < WORD_LENGTH) {
+          setIsLost(true);
+        }
 
         return {
           grid,
@@ -134,6 +139,22 @@ function Grid() {
     handleKey(event.key);
   };
 
+  const handleNewGame = () => {
+    const randomIndex = Math.floor(Math.random() * WORDS.length);
+    const word = WORDS[randomIndex].toUpperCase();
+    setTargetWord(word);
+    setGameState({
+      grid: initialGrid,
+      colors: initialColors,
+      currentRow: 0,
+      currentCol: 0,
+    });
+    setCorrectLetters(0);
+    setShakeRow(null);
+    setWinRow(null);
+    setIsLost(false);
+  };
+
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -152,7 +173,10 @@ function Grid() {
       <div className={styles.main}>
         {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => {
           return (
-            <div key={index} className={`${styles.row} ${shakeRow === index ? styles.shake : ''}`}>
+            <div
+              key={index}
+              className={`${styles.row} ${shakeRow === index ? styles.shake : ''}`}
+            >
               {Array.from({ length: WORD_LENGTH }).map((_, cellIndex) => {
                 return (
                   <div
@@ -170,6 +194,33 @@ function Grid() {
             </div>
           );
         })}
+
+        {gameState.currentRow === MAX_ATTEMPTS &&
+          correctLetters < WORD_LENGTH && (
+            <div>
+              <h2 className={styles.lost}>{messages.lost}</h2>
+            </div>
+          )}
+
+        {isLost && (
+          <div className={styles.popup}>
+            <div className={styles.popupTitle}>{messages.lost}</div>
+            <div className={styles.popupContent}>
+              <p>The answer was:</p>
+              <h1 className={styles.targetWord}>{targetWord}</h1>
+              <a
+                href={`https://www.google.com/search?q=define+${targetWord}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                What does this word mean?
+              </a>
+              <button className={styles.newGame} onClick={handleNewGame}>
+                New Game
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className={styles.keyboard}>
           {KEYBOARD.map((row, rowIndex) => {
