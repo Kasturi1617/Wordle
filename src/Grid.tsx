@@ -17,6 +17,7 @@ function Grid() {
   const [targetWord, setTargetWord] = useState('');
   const [correctLetters, setCorrectLetters] = useState(0);
   const [shakeRow, setShakeRow] = useState<number | null>(null);
+  const [winRow, setWinRow] = useState<number | null>(null);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * WORDS.length);
@@ -40,9 +41,11 @@ function Grid() {
     currentCol: 0,
   });
 
-  
-
   const handleKey = (key: string) => {
+    if(correctLetters === WORD_LENGTH) {
+      console.log('Game already won, ignoring input');
+      return;
+    }
     if (key.length === 1 && key.match(/[a-zA-Z]/)) {
       setGameState(prev => {
         const { grid, currentRow, currentCol } = prev;
@@ -71,7 +74,10 @@ function Grid() {
         if (currentCol < WORD_LENGTH) return prev;
 
         const currentWord = grid[currentRow].join('');
-        console.log(currentWord);
+
+        if(currentWord === targetWord) {
+          setWinRow(currentRow);
+        }
 
         if (!WORDS.includes(currentWord.toLowerCase())) {
           setShakeRow(currentRow);
@@ -87,16 +93,13 @@ function Grid() {
 
         for (let i = 0; i < WORD_LENGTH; i++) {
           if (targetWord[i] === currentWord[i]) {
-            console.log('Green:', currentWord[i]);
             newColors[currentRow][i] = styles.green;
-            setCorrectLetters(prev => prev + 1);
+            count++;
           } else if (targetWord.includes(currentWord[i])) {
-            console.log('Yellow:', currentWord[i]);
             newColors[currentRow][i] = styles.yellow;
           }
         }
-
-        console.log(newColors);
+        setCorrectLetters(count);
 
         return {
           grid,
@@ -136,7 +139,7 @@ function Grid() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [targetWord]);
+  }, [targetWord, correctLetters]);
 
   return (
     <>
@@ -145,7 +148,7 @@ function Grid() {
         href="https://fonts.googleapis.com/css?family=Audiowide|Sofia|Trirong"
       ></link>
       <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
-      <h1 className={styles.title}>Wordle</h1>
+      <h1 className={styles.title}>{messages.wordle}</h1>
       <div className={styles.main}>
         {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => {
           return (
@@ -156,7 +159,9 @@ function Grid() {
                     key={cellIndex}
                     className={`${styles.cell} 
                     ${gameState.colors[index][cellIndex]} 
-                    ${index === gameState.currentRow - 1 ? styles.flip : ''}`}
+                    ${index === gameState.currentRow - 1 ? styles.flip : ''} 
+                    ${winRow === index ? styles.pop : ''} 
+                    ${winRow === index ? styles[`pop${cellIndex}`] : ''}`}
                   >
                     {gameState.grid[index][cellIndex]}
                   </div>
