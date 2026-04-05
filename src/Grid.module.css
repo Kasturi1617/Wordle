@@ -57,6 +57,72 @@
   background-color: #bfc6c4;
 }
 
+.lost {
+  text-align: center;
+}
+
+.popupTitle {
+  background-color: #daf9de;
+  align-items: center;
+  height: 35px;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  height: 41px;
+  padding: 0 40px;
+  text-align: center;
+}
+
+.popupContent {
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+.popup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 270px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+  padding-bottom: 18px;
+  z-index: 1000;
+  text-align: center;
+}
+
+.popupBackdrop{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 999;
+  /* backdrop-filter: blur(1px); */
+}
+
+.targetWord {
+  border: 1px dashed black;
+  width: 55%;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.newGame {
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #93bd57;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .yellow {
   background-color: yellow;
 }
@@ -88,11 +154,21 @@
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .pop {
@@ -100,16 +176,29 @@
 }
 
 @keyframes pop {
-  0%   { transform: scale(1); }
-  30%  { transform: scale(1.3); }
-  60%  { transform: scale(0.9); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
-.pop0 { animation-delay: 0s; }
-.pop1 { animation-delay: 0.2s; }
-.pop2 { animation-delay: 0.4s; }
-.pop3 { animation-delay: 0.6s; }
-.pop4 { animation-delay: 0.8s; }
-
-
+.pop0 {
+  animation-delay: 0s;
+}
+.pop1 {
+  animation-delay: 0.2s;
+}
+.pop2 {
+  animation-delay: 0.4s;
+}
+.pop3 {
+  animation-delay: 0.6s;
+}
+.pop4 {
+  animation-delay: 0.8s;
+}
