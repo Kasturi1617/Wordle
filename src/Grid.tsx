@@ -201,7 +201,7 @@ function Grid() {
 
         {showWinText && (
           <div>
-            <h2 className={styles.winText}>You won 🎊🎉🥂</h2>
+            <h2 className={styles.winText}>{messages.youWon}</h2>
           </div>
         )}
 
