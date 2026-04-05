@@ -5,19 +5,19 @@ import cellStyles from './Cell.module.css';
 interface CellProps {
   value: string;
   colorClass: string;
-  isFlipped: boolean;
-  isPopped: boolean;
+  shouldFlip: boolean;
+  shouldPop: boolean;
   popClass?: string;
 }
 
-export const Cell: React.FC<CellProps> = ({ value, colorClass, isFlipped, isPopped, popClass }) => (
+export const Cell: React.FC<CellProps> = ({ value, colorClass, shouldFlip, shouldPop, popClass }) => (
   <div
     className={[
       cellStyles.cell,
       cellStyles[colorClass] || '',
-      isFlipped ? cellStyles.flip : '',
-      isPopped ? cellStyles.pop : '',
-      isPopped && popClass ? cellStyles[popClass] : '',
+      shouldFlip ? cellStyles.flip : '',
+      shouldPop ? cellStyles.pop : '',
+      shouldPop && popClass ? cellStyles[popClass] : '',
     ].join(' ')}
   >
     {value}
@@ -27,9 +27,9 @@ export const Cell: React.FC<CellProps> = ({ value, colorClass, isFlipped, isPopp
 interface GridRowProps {
   rowValues: string[];
   colorRow: string[];
-  isShaking: boolean;
-  isFlipped: boolean;
-  isPopped: boolean;
+  shouldShake: boolean;
+  shouldFlip: boolean;
+  shouldPop: boolean;
   winRow: number | null;
   rowIndex: number;
 }
@@ -37,21 +37,21 @@ interface GridRowProps {
 export const GridRow: React.FC<GridRowProps> = ({
   rowValues,
   colorRow,
-  isShaking,
-  isFlipped,
-  isPopped,
+  shouldShake,
+  shouldFlip,
+  shouldPop,
   winRow,
   rowIndex,
 }) => (
-  <div className={`${rowStyles.row} ${isShaking ? cellStyles.shake : ''}`}>
+  <div className={`${rowStyles.row} ${shouldShake ? cellStyles.shake : ''}`}>
     {rowValues.map((cell, cellIndex) => (
       <Cell
         key={cellIndex}
         value={cell}
         colorClass={colorRow[cellIndex]}
-        isFlipped={isFlipped}
-        isPopped={isPopped}
-        popClass={isPopped ? `pop${cellIndex}` : ''}
+        shouldFlip={shouldFlip}
+        shouldPop={shouldPop}
+        popClass={shouldPop ? `pop${cellIndex}` : ''}
       />
     ))}
   </div>

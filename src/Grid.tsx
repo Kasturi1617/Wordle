@@ -161,9 +161,9 @@ function Grid() {
             key={index}
             rowValues={gameState.grid[index]}
             colorRow={gameState.colors[index]}
-            isShaking={shakeRow === index}
-            isFlipped={index === gameState.currentRow - 1}
-            isPopped={winRow === index}
+            shouldShake={shakeRow === index}
+            shouldFlip={index === gameState.currentRow - 1}
+            shouldPop={winRow === index}
             winRow={winRow}
             rowIndex={index}
           />
