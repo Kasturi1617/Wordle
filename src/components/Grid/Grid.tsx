@@ -11,7 +11,6 @@ import {
 import Confetti from 'react-confetti';
 import Keyboard from '../Keyboard/Keyboard.tsx';
 import { GridRow } from '../GridRow/GridRow.tsx';
-import Popup from '../GameOverPopup/GameOverPopup.tsx';
 import GameOverPopup from '../GameOverPopup/GameOverPopup.tsx';
 
 function Grid() {
