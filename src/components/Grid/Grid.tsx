@@ -1,19 +1,18 @@
-import styles from './Grid.module.css';
-import messages from './messages';
+import styles from './css/Grid.module.css';
+import messages from '../../constants/messages.ts';
 import { useEffect, useState } from 'react';
-import WORDS from './WORDS.ts';
 import {
   getRandomWord,
   getInitialGrid,
   getInitialColors,
   isValidWord,
   getColorsForGuess,
-} from './wordleUtils';
+} from '../../utils/wordleUtils.ts';
 import Confetti from 'react-confetti';
-import Keyboard from './Keyboard';
-import { GridRow } from './GridRow';
-import Popup from './GameOverPopup.tsx';
-import GameOverPopup from './GameOverPopup.tsx';
+import Keyboard from '../Keyboard/Keyboard.tsx';
+import { GridRow } from '../GridRow/GridRow.tsx';
+import Popup from '../GameOverPopup/GameOverPopup.tsx';
+import GameOverPopup from '../GameOverPopup/GameOverPopup.tsx';
 
 function Grid() {
   const MAX_ATTEMPTS = 6;
