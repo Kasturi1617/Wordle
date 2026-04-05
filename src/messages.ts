@@ -1,7 +1,7 @@
 const messages = {
     wordle: "Wordle",
     notAValidWord: "Not a valid word",
-    lost: "You lost!",
+    youLost: "You lost!",
     theAnswerWas: "The answer was:",
     whatDoesThisWordMean: "What does this word mean?",
     newGame: "New Game"

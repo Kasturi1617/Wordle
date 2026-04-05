@@ -2,7 +2,11 @@ import styles from './Grid.module.css';
 import messages from './messages';
 import { useEffect, useState } from 'react';
 import WORDS from './WORDS.ts';
+import { getRandomWord, getInitialGrid, getInitialColors, isValidWord, getColorsForGuess } from './wordleUtils';
 import Confetti from 'react-confetti';
+import Keyboard from './Keyboard';
+import { GridRow } from './GridRow';
+import Popup from './Popup';
 
 function Grid() {
   const MAX_ATTEMPTS = 6;
@@ -20,20 +24,16 @@ function Grid() {
   const [winRow, setWinRow] = useState<number | null>(null);
   const [isLost, setIsLost] = useState(false);
 
+
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * WORDS.length);
-    const word = WORDS[randomIndex].toUpperCase();
+    const word = getRandomWord();
     setTargetWord(word);
     console.log('Target Word:', word);
   }, []);
 
-  const initialGrid = Array.from({ length: MAX_ATTEMPTS }, () =>
-    Array(WORD_LENGTH).fill(''),
-  );
 
-  const initialColors = Array.from({ length: MAX_ATTEMPTS }, () =>
-    Array(WORD_LENGTH).fill(''),
-  );
+  const initialGrid = getInitialGrid(MAX_ATTEMPTS, WORD_LENGTH);
+  const initialColors = getInitialColors(MAX_ATTEMPTS, WORD_LENGTH);
 
   const [gameState, setGameState] = useState({
     grid: initialGrid,
@@ -44,7 +44,6 @@ function Grid() {
 
   const handleKey = (key: string) => {
     if (correctLetters === WORD_LENGTH) {
-      console.log('Game already won, ignoring input');
       return;
     }
     if (key.length === 1 && key.match(/[a-zA-Z]/)) {
@@ -71,41 +70,27 @@ function Grid() {
     } else if (key === 'Enter' || key === '⏎') {
       setGameState(prev => {
         const { grid, colors, currentRow, currentCol } = prev;
-
         if (currentCol < WORD_LENGTH) return prev;
-
         const currentWord = grid[currentRow].join('');
-
         if (currentWord === targetWord) {
           setWinRow(currentRow);
         }
-
-        if (!WORDS.includes(currentWord.toLowerCase())) {
+        if (!isValidWord(currentWord)) {
           setShakeRow(currentRow);
           setTimeout(() => {
             setShakeRow(null);
           }, 1000);
           return prev;
         }
-
         const newColors = colors.map(row => [...row]);
-        console.log('Targetword: ', targetWord);
-        var count = 0;
-
+        const { colors: guessColors, correctCount } = getColorsForGuess(targetWord, currentWord, styles);
         for (let i = 0; i < WORD_LENGTH; i++) {
-          if (targetWord[i] === currentWord[i]) {
-            newColors[currentRow][i] = styles.green;
-            count++;
-          } else if (targetWord.includes(currentWord[i])) {
-            newColors[currentRow][i] = styles.yellow;
-          }
+          newColors[currentRow][i] = guessColors[i];
         }
-        setCorrectLetters(count);
-
-        if (currentRow === MAX_ATTEMPTS - 1 && count < WORD_LENGTH) {
+        setCorrectLetters(correctCount);
+        if (currentRow === MAX_ATTEMPTS - 1 && correctCount < WORD_LENGTH) {
           setIsLost(true);
         }
-
         return {
           grid,
           colors: newColors,
@@ -140,12 +125,11 @@ function Grid() {
   };
 
   const handleNewGame = () => {
-    const randomIndex = Math.floor(Math.random() * WORDS.length);
-    const word = WORDS[randomIndex].toUpperCase();
+    const word = getRandomWord();
     setTargetWord(word);
     setGameState({
-      grid: initialGrid,
-      colors: initialColors,
+      grid: getInitialGrid(MAX_ATTEMPTS, WORD_LENGTH),
+      colors: getInitialColors(MAX_ATTEMPTS, WORD_LENGTH),
       currentRow: 0,
       currentCol: 0,
     });
@@ -171,80 +155,31 @@ function Grid() {
       <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
       <h1 className={styles.title}>{messages.wordle}</h1>
       <div className={styles.main}>
-        {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => {
-          return (
-            <div
-              key={index}
-              className={`${styles.row} ${shakeRow === index ? styles.shake : ''}`}
-            >
-              {Array.from({ length: WORD_LENGTH }).map((_, cellIndex) => {
-                return (
-                  <div
-                    key={cellIndex}
-                    className={`${styles.cell} 
-                    ${gameState.colors[index][cellIndex]} 
-                    ${index === gameState.currentRow - 1 ? styles.flip : ''} 
-                    ${winRow === index ? styles.pop : ''} 
-                    ${winRow === index ? styles[`pop${cellIndex}`] : ''}`}
-                  >
-                    {gameState.grid[index][cellIndex]}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+        {Array.from({ length: MAX_ATTEMPTS }).map((_, index) => (
+          <GridRow
+            key={index}
+            rowValues={gameState.grid[index]}
+            colorRow={gameState.colors[index]}
+            isShaking={shakeRow === index}
+            isFlipped={index === gameState.currentRow - 1}
+            isPopped={winRow === index}
+            winRow={winRow}
+            rowIndex={index}
+          />
+        ))}
 
         {gameState.currentRow === MAX_ATTEMPTS &&
           correctLetters < WORD_LENGTH && (
             <div>
-              <h2 className={styles.lost}>{messages.lost}</h2>
+              <h2 className={styles.lost}>{messages.youLost}</h2>
             </div>
           )}
 
         {isLost && (
-          <div className={styles.popupBackdrop}>
-            <div className={styles.popup}>
-              <div className={styles.popupTitle}>{messages.lost}</div>
-              <div className={styles.popupContent}>
-                <p>{messages.theAnswerWas}</p>
-                <h1 className={styles.targetWord}>{targetWord}</h1>
-                <a
-                  href={`https://www.google.com/search?q=define+${targetWord}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {messages.whatDoesThisWordMean}
-                </a>
-                <button className={styles.newGame} onClick={handleNewGame}>
-                  {messages.newGame}
-                </button>
-              </div>
-            </div>
-          </div>
+          <Popup targetWord={targetWord} messages={messages} onNewGame={handleNewGame} />
         )}
 
-        <div className={styles.keyboard}>
-          {KEYBOARD.map((row, rowIndex) => {
-            return (
-              <div key={rowIndex} className={styles.keyboard_row}>
-                {row.map((letter, colIndex) => {
-                  return (
-                    <button
-                      key={`${rowIndex}${colIndex}`}
-                      className={styles.key}
-                      onClick={() => {
-                        handleKey(letter);
-                      }}
-                    >
-                      {letter}
-                    </button>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
+        <Keyboard layout={KEYBOARD} onKeyPress={handleKey} />
       </div>
     </>
   );
