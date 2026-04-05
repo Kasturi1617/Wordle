@@ -6,7 +6,8 @@ import { getRandomWord, getInitialGrid, getInitialColors, isValidWord, getColors
 import Confetti from 'react-confetti';
 import Keyboard from './Keyboard';
 import { GridRow } from './GridRow';
-import Popup from './Popup';
+import Popup from './GameOverPopup.tsx';
+import GameOverPopup from './GameOverPopup.tsx';
 
 function Grid() {
   const MAX_ATTEMPTS = 6;
@@ -83,7 +84,7 @@ function Grid() {
           return prev;
         }
         const newColors = colors.map(row => [...row]);
-        const { colors: guessColors, correctCount } = getColorsForGuess(targetWord, currentWord, styles);
+        const { colors: guessColors, correctCount } = getColorsForGuess(targetWord, currentWord);
         for (let i = 0; i < WORD_LENGTH; i++) {
           newColors[currentRow][i] = guessColors[i];
         }
@@ -176,7 +177,7 @@ function Grid() {
           )}
 
         {isLost && (
-          <Popup targetWord={targetWord} messages={messages} onNewGame={handleNewGame} />
+          <GameOverPopup targetWord={targetWord} messages={messages} onNewGame={handleNewGame} />
         )}
 
         <Keyboard layout={KEYBOARD} onKeyPress={handleKey} />

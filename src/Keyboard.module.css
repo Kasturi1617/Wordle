@@ -1,0 +1,19 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.keyboard_row {
+  display: flex;
+  flex-direction: row;
+}
+
+.key {
+  margin-right: 5px;
+  margin-top: 5px;
+  width: 30px;
+  height: 40px;
+  background-color: #bfc6c4;
+}

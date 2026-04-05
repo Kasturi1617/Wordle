@@ -18,15 +18,15 @@ export function getInitialColors(rows: number, cols: number): string[][] {
   return Array.from({ length: rows }, () => Array(cols).fill(''));
 }
 
-export function getColorsForGuess(targetWord: string, guess: string, styles: any): { colors: string[], correctCount: number } {
+export function getColorsForGuess(targetWord: string, guess: string): { colors: string[], correctCount: number } {
   let colors = Array(targetWord.length).fill('');
   let correctCount = 0;
   for (let i = 0; i < targetWord.length; i++) {
     if (targetWord[i] === guess[i]) {
-      colors[i] = styles.green;
+      colors[i] = 'green';
       correctCount++;
     } else if (targetWord.includes(guess[i])) {
-      colors[i] = styles.yellow;
+      colors[i] = 'yellow';
     }
   }
   return { colors, correctCount };

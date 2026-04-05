@@ -1,5 +1,6 @@
 import React from 'react';
-import styles from './Grid.module.css';
+import rowStyles from './GridRow.module.css';
+import cellStyles from './Cell.module.css';
 
 interface CellProps {
   value: string;
@@ -12,11 +13,11 @@ interface CellProps {
 export const Cell: React.FC<CellProps> = ({ value, colorClass, isFlipped, isPopped, popClass }) => (
   <div
     className={[
-      styles.cell,
-      colorClass,
-      isFlipped ? styles.flip : '',
-      isPopped ? styles.pop : '',
-      isPopped && popClass ? styles[popClass] : '',
+      cellStyles.cell,
+      cellStyles[colorClass] || '',
+      isFlipped ? cellStyles.flip : '',
+      isPopped ? cellStyles.pop : '',
+      isPopped && popClass ? cellStyles[popClass] : '',
     ].join(' ')}
   >
     {value}
@@ -42,7 +43,7 @@ export const GridRow: React.FC<GridRowProps> = ({
   winRow,
   rowIndex,
 }) => (
-  <div className={`${styles.row} ${isShaking ? styles.shake : ''}`}>
+  <div className={`${rowStyles.row} ${isShaking ? cellStyles.shake : ''}`}>
     {rowValues.map((cell, cellIndex) => (
       <Cell
         key={cellIndex}

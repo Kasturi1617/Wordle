@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Grid.module.css';
+import styles from './Keyboard.module.css';
 
 interface KeyboardProps {
   layout: string[][];

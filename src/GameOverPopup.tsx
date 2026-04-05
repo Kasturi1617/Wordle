@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Grid.module.css';
+import styles from './Popup.module.css';
 
 interface PopupProps {
   targetWord: string;
@@ -7,7 +7,7 @@ interface PopupProps {
   onNewGame: () => void;
 }
 
-const Popup: React.FC<PopupProps> = ({ targetWord, messages, onNewGame }) => (
+const GameOverPopup: React.FC<PopupProps> = ({ targetWord, messages, onNewGame }) => (
   <div className={styles.popupBackdrop}>
     <div className={styles.popup}>
       <div className={styles.popupTitle}>{messages.youLost}</div>
@@ -29,4 +29,4 @@ const Popup: React.FC<PopupProps> = ({ targetWord, messages, onNewGame }) => (
   </div>
 );
 
-export default Popup;
+export default GameOverPopup;
