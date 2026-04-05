@@ -1,16 +1,71 @@
-# React + Vite
+# Wordle Clone (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, modular, and customizable Wordle clone built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Features
+- Classic Wordle gameplay (6 attempts, 5-letter words)
+- Responsive UI with keyboard and grid animations
+- Modular React components (Grid, Keyboard, GameOverPopup, etc.)
+- Confetti animation on win (using `react-confetti`)
+- Utility functions for word logic
+- CSS Modules for component-scoped styling
+- Easy to extend and refactor
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Getting Started
 
-## React Compiler
+### Prerequisites
+- Node.js (v16+ recommended)
+- npm or yarn
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Installation
+```bash
+npm install
+# or
+yarn install
+```
 
-## Expanding the ESLint configuration
+### Running the App
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Project Structure
+```
+wordle-frontend/
+├── public/                # Static assets
+├── src/
+│   ├── App.jsx            # App entry point
+│   ├── Grid.tsx           # Main game grid logic
+│   ├── Keyboard.tsx       # On-screen keyboard
+│   ├── GridRow.tsx        # Grid row and cell components
+│   ├── GameOverPopup.tsx  # Popup for game over
+│   ├── wordleUtils.ts     # Utility functions
+│   ├── WORDS.ts           # Word list
+│   ├── messages.ts        # UI messages
+│   └── ...
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+## Customization
+- **Add words:** Edit `src/WORDS.ts` to add or remove valid words.
+- **Styling:** Modify or extend CSS modules in `src/` for custom themes.
+- **Game logic:** Update `src/wordleUtils.ts` for custom rules.
+
+## Dependencies
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [react-confetti](https://www.npmjs.com/package/react-confetti)
+- TypeScript (optional, for type safety)
+
+## Credits
+- Inspired by the original [Wordle](https://www.nytimes.com/games/wordle/index.html)
+- Built by [Your Name]
+
+## License
+MIT
