@@ -10,12 +10,12 @@ interface PopupProps {
 const Popup: React.FC<PopupProps> = ({ targetWord, messages, onNewGame }) => (
   <div className={styles.popupBackdrop}>
     <div className={styles.popup}>
-      <div className={styles.popupTitle}>{messages.lost}</div>
+      <div className={styles.popupTitle}>{messages.youLost}</div>
       <div className={styles.popupContent}>
         <p>{messages.theAnswerWas}</p>
         <h1 className={styles.targetWord}>{targetWord}</h1>
         <a
-          href={`https://www.google.com/search?q=define+${targetWord}`}
+          href={`https://www.google.com/search?q=define+${encodeURIComponent(targetWord)}`}
           target="_blank"
           rel="noopener noreferrer"
         >
