@@ -1,4 +1,3 @@
-// Utility functions for Wordle game logic
 import WORDS from '../constants/WORDS';
 
 export function getRandomWord(): string {
@@ -21,13 +20,27 @@ export function getInitialColors(rows: number, cols: number): string[][] {
 export function getColorsForGuess(targetWord: string, guess: string): { colors: string[], correctCount: number } {
   let colors = Array(targetWord.length).fill('');
   let correctCount = 0;
-  for (let i = 0; i < targetWord.length; i++) {
-    if (targetWord[i] === guess[i]) {
+  const targetArr = targetWord.split('');
+  const guessArr = guess.split('');
+
+  for (let i = 0; i < targetArr.length; i++) {
+    if (guessArr[i] === targetArr[i]) {
       colors[i] = 'green';
       correctCount++;
-    } else if (targetWord.includes(guess[i])) {
-      colors[i] = 'yellow';
+      targetArr[i] = null as any;
+      guessArr[i] = null as any;
     }
   }
+
+  for (let i = 0; i < guessArr.length; i++) {
+    if (colors[i] === '' && guessArr[i] !== null) {
+      const idx = targetArr.indexOf(guessArr[i]);
+      if (idx !== -1) {
+        colors[i] = 'yellow';
+        targetArr[idx] = null as any;
+      }
+    }
+  }
+
   return { colors, correctCount };
 }
