@@ -2,7 +2,13 @@ import styles from './Grid.module.css';
 import messages from './messages';
 import { useEffect, useState } from 'react';
 import WORDS from './WORDS.ts';
-import { getRandomWord, getInitialGrid, getInitialColors, isValidWord, getColorsForGuess } from './wordleUtils';
+import {
+  getRandomWord,
+  getInitialGrid,
+  getInitialColors,
+  isValidWord,
+  getColorsForGuess,
+} from './wordleUtils';
 import Confetti from 'react-confetti';
 import Keyboard from './Keyboard';
 import { GridRow } from './GridRow';
@@ -24,14 +30,14 @@ function Grid() {
   const [shakeRow, setShakeRow] = useState<number | null>(null);
   const [winRow, setWinRow] = useState<number | null>(null);
   const [isLost, setIsLost] = useState(false);
-
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showWinText, setShowWinText] = useState(false);
 
   useEffect(() => {
     const word = getRandomWord();
     setTargetWord(word);
     console.log('Target Word:', word);
   }, []);
-
 
   const initialGrid = getInitialGrid(MAX_ATTEMPTS, WORD_LENGTH);
   const initialColors = getInitialColors(MAX_ATTEMPTS, WORD_LENGTH);
@@ -75,6 +81,11 @@ function Grid() {
         const currentWord = grid[currentRow].join('');
         if (currentWord === targetWord) {
           setWinRow(currentRow);
+          setShowConfetti(true);
+          setShowWinText(true);
+          setTimeout(() => {
+            setShowConfetti(false);
+          }, 8000);
         }
         if (!isValidWord(currentWord)) {
           setShakeRow(currentRow);
@@ -84,11 +95,15 @@ function Grid() {
           return prev;
         }
         const newColors = colors.map(row => [...row]);
-        const { colors: guessColors, correctCount } = getColorsForGuess(targetWord, currentWord);
+        const { colors: guessColors, correctCount } = getColorsForGuess(
+          targetWord,
+          currentWord,
+        );
         for (let i = 0; i < WORD_LENGTH; i++) {
           newColors[currentRow][i] = guessColors[i];
         }
         setCorrectLetters(correctCount);
+
         if (currentRow === MAX_ATTEMPTS - 1 && correctCount < WORD_LENGTH) {
           setIsLost(true);
         }
@@ -177,7 +192,21 @@ function Grid() {
           )}
 
         {isLost && (
-          <GameOverPopup targetWord={targetWord} messages={messages} onNewGame={handleNewGame} />
+          <GameOverPopup
+            targetWord={targetWord}
+            messages={messages}
+            onNewGame={handleNewGame}
+          />
+        )}
+
+        {showWinText && (
+          <div>
+            <h2 className={styles.winText}>You won 🎊🎉🥂</h2>
+          </div>
+        )}
+
+        {showConfetti && (
+          <Confetti width={window.innerWidth} height={window.innerHeight} />
         )}
 
         <Keyboard layout={KEYBOARD} onKeyPress={handleKey} />

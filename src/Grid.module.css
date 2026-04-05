@@ -123,6 +123,10 @@
   cursor: pointer;
 }
 
+.winText {
+  text-align: center;
+}
+
 .yellow {
   background-color: yellow;
 }
