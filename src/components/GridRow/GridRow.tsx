@@ -1,6 +1,6 @@
 import React from 'react';
-import rowStyles from './GridRow.module.css';
-import cellStyles from './Cell.module.css';
+import rowStyles from './css/GridRow.module.css';
+import cellStyles from './css/Cell.module.css';
 
 interface CellProps {
   value: string;

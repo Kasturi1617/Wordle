@@ -1,5 +1,5 @@
 // Utility functions for Wordle game logic
-import WORDS from './WORDS';
+import WORDS from '../constants/WORDS';
 
 export function getRandomWord(): string {
   const randomIndex = Math.floor(Math.random() * WORDS.length);
