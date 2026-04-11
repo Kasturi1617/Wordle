@@ -1,10 +1,10 @@
 .main {
   display: flex;
   flex-direction: column;
-  max-width: fit-content;
   margin-top: 50px;
-  margin-left: 41%;
-  /* margin-right: auto; */
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .title {

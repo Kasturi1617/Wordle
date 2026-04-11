@@ -16,4 +16,25 @@
   width: 30px;
   height: 40px;
   background-color: #bfc6c4;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #222;
+  transition: background 0.2s;
+}
+
+.keyGreen {
+  background-color: #6aaa64 !important;
+  color: #fff !important;
+}
+
+.keyYellow {
+  background-color: #c9b458 !important;
+  color: #fff !important;
+}
+
+.keyGray {
+  background-color: #787c7e !important;
+  color: #fff !important;
 }

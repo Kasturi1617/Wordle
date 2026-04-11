@@ -160,6 +160,27 @@ function Grid() {
     };
   }, [targetWord, correctLetters]);
 
+  const getLetterStatus = () => {
+    const status: Record<string, 'green' | 'yellow' | 'gray'> = {};
+    for (let row = 0; row < gameState.grid.length; row++) {
+      for (let col = 0; col < gameState.grid[row].length; col++) {
+        const letter = gameState.grid[row][col];
+        const color = gameState.colors[row][col];
+        if (!letter) continue;
+        if (color === 'green') {
+          status[letter] = 'green';
+        } else if (color === 'yellow') {
+          if (status[letter] !== 'green') status[letter] = 'yellow';
+        } else if (color === '') {
+          if (!status[letter]) status[letter] = 'gray';
+        }
+      }
+    }
+    return status;
+  };
+
+  const letterStatus = getLetterStatus();
+
   return (
     <>
       <link
@@ -207,7 +228,7 @@ function Grid() {
           <Confetti width={window.innerWidth} height={window.innerHeight} />
         )}
 
-        <Keyboard layout={KEYBOARD} onKeyPress={handleKey} />
+        <Keyboard layout={KEYBOARD} onKeyPress={handleKey} letterStatus={letterStatus} />
       </div>
     </>
   );
