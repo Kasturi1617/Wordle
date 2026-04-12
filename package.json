@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://kasturi1617.github.io/Wordle",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
